@@ -129,14 +129,19 @@ defmodule SenseWrapper do
     mtype = (sugg.subtype == "") or sugg.type
     %{
       "kind" => "mod",
-      "word" => sugg.name,
-      "abbr" => sugg.name,
+      "word" => mod <> sugg.name,
+      "abbr" => mod <> sugg.name,
       "menu" => mtype,
       "info" => sugg.summary,
     }
   end
 
   defp parse_func_suggestion(mod, sugg) do
+    word = if String.ends_with?(sugg.origin <> ".", mod) do
+      mod <> sugg.name
+    else
+      sugg.name
+    end
     sign = if sugg.args != "" do
       args = sugg.args |> String.split(",") |> Enum.join(", ")
       sugg.name <> "(" <> args <> ")"
@@ -152,7 +157,7 @@ defmodule SenseWrapper do
 
     %{
       "kind" => "func",
-      "word" => sugg.name,
+      "word" => word,
       "abbr" => sign,
       "menu" => sugg.origin,
       "info" => info,

@@ -35,7 +35,7 @@ def _log(func):
 class Elixir(Completor):
     filetype = 'elixir'
     daemon = True
-    trigger = r'^\s*use\s+[A-Z][\w\.]+\.|^(?!\s*use\s+\w+)\w{2,}\w*$'
+    trigger = r'(\w{2,}\w*|\.\w*)$'
 
     _ACTION_MAP = {
         b'doc': 'doc',
@@ -50,15 +50,16 @@ class Elixir(Completor):
         self._elixir_ctx = None
 
     def _find_project_path(self, _pathlib=os.path):
-        cwd = os.getcwd()
-        dirs = cwd.split(_pathlib.sep)
+        dirs = ['/']
+        dirs.extend(_pathlib.dirname(self.filename).split(_pathlib.sep))
         ndirs = len(dirs)
         mix_path = ''
         for level in range(ndirs, 0, -1):
             cur_dir = _pathlib.join(*dirs[:level])
+            logger.info('============= %r', cur_dir)
             if _pathlib.isfile(_pathlib.join(cur_dir, 'mix.exs')):
                 mix_path = cur_dir
-        return mix_path if mix_path else cwd
+        return mix_path if mix_path else os.getcwd()
 
     def _get_elixir_ctx(self):
         _, file = os.path.split(self.filename)
