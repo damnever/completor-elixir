@@ -16,7 +16,9 @@ pathlib = os.path
 logger = logging.getLogger('completor')
 cur_dir = pathlib.dirname(pathlib.abspath(__file__))
 sense_wrapper_dir = pathlib.join(cur_dir, '../sense_wrapper')
-sense_wrapper_cmd = ['mix', 'run', '--no-halt']
+# FIXME(damnever): Comment out until https://github.com/maralla/completor.vim/pull/186 get merged.
+# sense_wrapper_cmd = ['mix', 'run', '--no-halt']
+sense_wrapper_cmd = 'sh -c "cd {} && mix run --no-halt"'.format(sense_wrapper_dir)
 if not pathlib.isdir(pathlib.join(sense_wrapper_dir, 'deps')):
     raise RuntimeError('!!! No deps found, run `make` to resolve it!')
 

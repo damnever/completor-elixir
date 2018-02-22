@@ -2,6 +2,8 @@
 
 Based on [completor.vim](https://github.com/maralla/completor.vim).
 
+NOTE: It is in Beta status, since this is my very first try on elixir-lang :)
+
 
 ### Install
 
