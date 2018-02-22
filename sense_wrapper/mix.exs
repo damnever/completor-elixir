@@ -7,15 +7,16 @@ defmodule SenseWrapper.MixProject do
       version: "0.1.0",
       elixir: "~> 1.6",
       start_permanent: Mix.env() == :prod,
-      escript: [main_module: SenseWrapper.CLI],
       deps: deps(),
+      # escript: [main_module: SenseWrapper.CLI],
     ]
   end
 
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger]
+      extra_applications: [:logger],
+      mod: {SenseWrapper.App, []},
     ]
   end
 
@@ -23,7 +24,7 @@ defmodule SenseWrapper.MixProject do
   defp deps do
     [
       {:poison, "~> 3.1"},
-      {:elixir_sense , git: "git@github.com:msaraiva/elixir_sense.git", ref: "feab4e38787babc221f4a85af60336fddf3fc43c"},
+      {:elixir_sense , git: "git@github.com:msaraiva/elixir_sense.git", ref: "e8e524fc8220a67147881da84149f8560df9bb7f"},
     ]
   end
 end

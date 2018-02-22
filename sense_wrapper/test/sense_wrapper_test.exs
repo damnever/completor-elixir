@@ -10,26 +10,30 @@ end
 """
 
   test "doc" do
-    output("doc", Poison.encode!(%{type: "doc", ctx: nil, code: @code, line: 3, column: 11}))
+    code = ~S"""
+defmodule MyModule do
+  String.split("hello")
+end
+"""
+    output("doc", Poison.encode!(%{type: "doc", ctx: nil, code: code, line: 1, column: 2}))
   end
 
   test "definition" do
     output("definition", Poison.encode!(%{type: "definition", ctx: nil, code: @code, line: 3, column: 11}))
   end
 
-  test "complete" do
+  test "complete2" do
     code = ~S"""
 defmodule MyModule do
-  alias Enum, as: MyEnum
-  MyEnu
+  Applica
 end
 """
-    output("complete", Poison.encode!(%{type: "complete", ctx: nil, code: code, line: 3, column: 8}))
+    output("complete2", Poison.encode!(%{type: "complete", ctx: nil, code: code, line: 2, column: 12}))
   end
 
   test "use module" do
     code = ~S"""
-    use Applica
+    use Application
     """
     output("complete", Poison.encode!(%{type: "complete", ctx: nil, code: code, line: 1, column: 16}))
   end
