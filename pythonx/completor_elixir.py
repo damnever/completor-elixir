@@ -120,6 +120,9 @@ class Elixir(Completor):
         if '.' in input_data or module == '':
             return suggestions
 
+        if module.startswith(':'):
+            module = module[1:]
+
         for sugg in suggestions:
             if sugg['kind'] != 'func':
                 continue
