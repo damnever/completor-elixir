@@ -35,9 +35,7 @@ def _log(func):
             if len(args) == 2 and isinstance(args[1], vim.List):
                 args = list(args[1])
             logger.exception('%s(%r, %r)', prefix, args, kwargs)
-            # FIXME(damnever): ignore compiling information
-            if not isinstance(e, json.decoder.JSONDecodeError):
-                raise
+            raise
     return _wrapper
 
 
@@ -136,15 +134,22 @@ class Elixir(Completor):
         return [loc]
 
     def _load_data_from(self, items, default=None):
-        raw = items[-1] # FIXME(damnever): ignore compiling information
-        if not raw:
-            logger.warn('no response data found')
-            return None
+        for raw in items:
+            if not raw:
+                continue
 
-        data = json.loads(raw)
-        errmsg = data.get('error', None)
-        if errmsg is not None:
-            logger.warn('error response: %r', errmsg)
-            return None
+            try:
+                data = json.loads(raw)
+            except json.JSONDecodeError:
+                # FIXME(damnever): ignore compiling information
+                logger.exception('elixir._load_data_from.json_loads(%r)', raw)
+                continue
+            errmsg = data.get('error', None)
+            if errmsg is not None:
+                logger.warn('error response: %r', errmsg)
+                continue
 
-        return data.get('data', default)
+            return data.get('data', default)
+
+        logger.warn('no response data found')
+        return default

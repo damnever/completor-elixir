@@ -21,7 +21,8 @@ defmodule SenseWrapper do
   def process(input) do
     with {:ok, req} <- Poison.decode(input),
          {:ok, resp} <- dispatch_request(req),
-         {:ok, output} <- Poison.encode(%{"data" => resp}) do
+         {:ok, output} <- Poison.encode(%{"data" => resp})
+    do
       output
     else
       {:error, reason} -> Poison.encode!(%{"error" => "#{inspect(reason)}"})
@@ -30,12 +31,12 @@ defmodule SenseWrapper do
   end
 
   defp dispatch_request(%{
-         "type" => type,
-         "ctx" => ctx,
-         "code" => code,
-         "line" => line,
-         "column" => column
-       }) do
+    "type" => type,
+    "ctx" => ctx,
+    "code" => code,
+    "line" => line,
+    "column" => column
+  }) do
     if ctx do
       %{"env" => env, "cwd" => cwd} = ctx
       # TODO(damnever): set context only if context changed
@@ -135,16 +136,16 @@ defmodule SenseWrapper do
     sign =
       if sugg.args != "" do
         args = sugg.args |> String.split(",") |> Enum.join(", ")
-        sugg.name <> "(" <> args <> ")"
+        mod <> sugg.name <> "(" <> args <> ")"
       else
-        sugg.name <> "/" <> Integer.to_string(sugg.arity)
+        mod <> sugg.name <> "/" <> Integer.to_string(sugg.arity)
       end
 
-    {word, abbr} =
+    word =
       if String.ends_with?(sugg.origin, mod) do
-        {mod <> sugg.name, mod <> sign}
+        mod <> sugg.name
       else
-        {sugg.name, "." <> sign}
+        sugg.name
       end
 
     info =
@@ -162,8 +163,8 @@ defmodule SenseWrapper do
     %{
       "kind" => "func",
       "word" => word,
-      "abbr" => abbr,
-      "menu" => sugg.origin,
+      "abbr" => word,
+      "menu" => sign,
       "info" => info,
     }
   end
