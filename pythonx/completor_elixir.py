@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import sys
-import re
 import json
 import logging
 import os.path
@@ -113,7 +111,22 @@ class Elixir(Completor):
 
     @_log
     def on_complete(self, items):
-        return self._load_data_from(items, [])
+        data = self._load_data_from(items, {})
+        suggestions = data.get('suggestions', None)
+        if not suggestions:
+            return []
+        module = data.get('module', '')
+        input_data = self.input_data.split()[-1]
+        if '.' in input_data or module == '':
+            return suggestions
+
+        for sugg in suggestions:
+            if sugg['kind'] != 'func':
+                continue
+            word = ''.join([module, sugg['word']])
+            sugg['word'] = word
+            sugg['abbr'] = word
+        return suggestions
 
     @_log
     def on_doc(self, items):

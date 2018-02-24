@@ -90,18 +90,16 @@ defmodule SenseWrapper do
     [hint | suggestions] = suggestions
 
     mod =
-      if String.contains?(hint.value, ".") do
-        if String.ends_with?(hint.value, ".") do
+      if String.ends_with?(hint.value, ".") do
           hint.value
-        else
-          trailing = hint.value |> String.split(".") |> Enum.take(-1) |> hd
-          String.trim_trailing(hint.value, trailing)
-        end
       else
         ""
       end
 
-    {:ok, parse_suggestions([], mod, suggestions)}
+    {:ok, %{
+      "module" => mod,
+      "suggestions" => parse_suggestions([], mod, suggestions) |> Enum.reverse,
+    }}
   end
 
   defp handle_request("signature", code, line, column) do
@@ -129,7 +127,7 @@ defmodule SenseWrapper do
 
   defp parse_mod_suggestion(_mod, sugg) do
     kind =
-      if sugg.subtype != nil do
+      if sugg.subtype do
         sugg.subtype
       else
         sugg.type
@@ -153,13 +151,6 @@ defmodule SenseWrapper do
         mod <> sugg.name <> "/" <> Integer.to_string(sugg.arity)
       end
 
-    word =
-      if String.ends_with?(sugg.origin, mod) do
-        mod <> sugg.name
-      else
-        sugg.name
-      end
-
     info =
       cond do
         sugg.summary != "" and sugg.spec != "" ->
@@ -170,12 +161,15 @@ defmodule SenseWrapper do
 
         sugg.summary != "" ->
           sugg.summary
+
+        true ->
+          ""
       end
 
     %{
       "kind" => "func",
-      "word" => word,
-      "abbr" => word,
+      "word" => sugg.name,
+      "abbr" => sugg.name,
       "menu" => sign,
       "info" => info,
     }
