@@ -16,8 +16,8 @@ defmodule SenseWrapper.App do
   defp run() do
     readline()
     |> String.trim
-    |> SenseWrapper.process()
-    |> IO.puts()
+    |> SenseWrapper.process
+    |> IO.puts
 
     run()
   end
