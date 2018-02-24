@@ -16,9 +16,9 @@ pathlib = os.path
 logger = logging.getLogger('completor')
 cur_dir = pathlib.dirname(pathlib.abspath(__file__))
 sense_wrapper_dir = pathlib.join(cur_dir, '../sense_wrapper')
-# FIXME(damnever): Comment out until https://github.com/maralla/completor.vim/pull/186 get merged.
-# sense_wrapper_cmd = ['mix', 'run', '--no-halt']
-sense_wrapper_cmd = 'sh -c "cd {} && mix run --no-halt"'.format(sense_wrapper_dir)
+# FIXME: ...
+sense_wrapper_cmd = 'sh -c "cd {} && MIX_ENV=prod mix run --no-compile"'
+sense_wrapper_cmd = sense_wrapper_cmd.format(sense_wrapper_dir)
 if not pathlib.isdir(pathlib.join(sense_wrapper_dir, 'deps')):
     raise RuntimeError('!!! No deps found, run `make` to resolve it!')
 
@@ -88,7 +88,6 @@ class Elixir(Completor):
     def get_cmd_info(self, _action):
         return vim.Dictionary(
             cmd=sense_wrapper_cmd,
-            cwd=sense_wrapper_dir,
             ftype=self.filetype,
             is_daemon=self.daemon,
             is_sync=self.sync,
@@ -134,22 +133,15 @@ class Elixir(Completor):
         return [loc]
 
     def _load_data_from(self, items, default=None):
-        for raw in items:
-            if not raw:
-                continue
+        raw = items[-1]
+        if not raw:
+            logger.warn('no response data found')
+            return default
 
-            try:
-                data = json.loads(raw)
-            except json.JSONDecodeError:
-                # FIXME(damnever): ignore compiling information
-                logger.exception('elixir._load_data_from.json_loads(%r)', raw)
-                continue
-            errmsg = data.get('error', None)
-            if errmsg is not None:
-                logger.warn('error response: %r', errmsg)
-                continue
+        data = json.loads(raw)
+        errmsg = data.get('error', None)
+        if errmsg is not None:
+            logger.warn('error response: %r', errmsg)
+            return default
 
-            return data.get('data', default)
-
-        logger.warn('no response data found')
-        return default
+        return data.get('data', default)

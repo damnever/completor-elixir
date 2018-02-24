@@ -31,11 +31,14 @@ end
     output("complete2", Poison.encode!(%{type: "complete", ctx: nil, code: code, line: 2, column: 12}))
   end
 
-  test "use module" do
+  test "complete" do
     code = ~S"""
-    use Application
-    """
-    output("complete", Poison.encode!(%{type: "complete", ctx: nil, code: code, line: 1, column: 16}))
+defmodule MyModule do
+  alias Enum, as: MyEnum
+  MyEnum.to_l
+end
+"""
+    output("complete", Poison.encode!(%{type: "complete", ctx: nil, code: code, line: 3, column: 14}))
   end
 
 

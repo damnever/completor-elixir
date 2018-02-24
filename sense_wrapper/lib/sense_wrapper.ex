@@ -18,6 +18,10 @@ defmodule SenseWrapper do
     "data"/"error": data/"reason",
   }
   """
+  def process("ping") do
+    "pong"
+  end
+
   def process(input) do
     with {:ok, req} <- Poison.decode(input),
          {:ok, resp} <- dispatch_request(req),
@@ -29,6 +33,7 @@ defmodule SenseWrapper do
       what -> Poison.encode!(%{"error" => "#{inspect(what)}"})
     end
   end
+
 
   defp dispatch_request(%{
     "type" => type,
@@ -49,6 +54,7 @@ defmodule SenseWrapper do
   defp dispatch_request(_req) do
     {:error, "bad request"}
   end
+
 
   defp handle_request("doc", code, line, column) do
     %{
@@ -102,9 +108,10 @@ defmodule SenseWrapper do
     {:ok, ElixirSense.signature(code, line, column)}
   end
 
+
   defp parse_suggestions(suggestions, mod, [sugg | rest]) do
     case sugg.type do
-      "module" ->
+      :module ->
         [parse_mod_suggestion(mod, sugg) | suggestions]
 
       "function" ->
@@ -120,14 +127,19 @@ defmodule SenseWrapper do
     suggestions
   end
 
-  defp parse_mod_suggestion(mod, sugg) do
-    mtype = sugg.subtype == "" or sugg.type
+  defp parse_mod_suggestion(_mod, sugg) do
+    kind =
+      if sugg.subtype != nil do
+        sugg.subtype
+      else
+        sugg.type
+      end |> Atom.to_string
 
     %{
-      "kind" => "mod",
-      "word" => mod <> sugg.name,
-      "abbr" => mod <> sugg.name,
-      "menu" => mtype,
+      "kind" => kind,
+      "word" => sugg.name,
+      "abbr" => sugg.name,
+      "menu" => "",
       "info" => sugg.summary,
     }
   end
