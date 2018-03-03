@@ -18,6 +18,7 @@ defmodule SenseWrapper do
     "data"/"error": data/"reason",
   }
   """
+  @spec process(String.t) :: String.t
   def process("ping") do
     "pong"
   end
