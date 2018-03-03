@@ -149,15 +149,22 @@ class Elixir(Completor):
         return [loc]
 
     def _load_data_from(self, items, default=None):
-        raw = items[-1]
-        if not raw:
-            logger.warn('no response data found')
-            return default
+        for item in items:
+            if not item:
+                break
 
-        data = json.loads(raw)
-        errmsg = data.get('error', None)
-        if errmsg is not None:
-            logger.warn('error response: %r', errmsg)
-            return default
+            # Ignore the fucking warning message from elixir-lang..
+            try:
+                data = json.loads(item)
+            except json.JSONDecodeError:
+                logger.warn('json decode failed: %r', item)
+                continue
 
-        return data.get('data', default)
+            errmsg = data.get('error', None)
+            if errmsg is not None:
+                logger.warn('error response: %r', errmsg)
+                return default
+            return data.get('data', default)
+
+        logger.warn('no response data found')
+        return default
