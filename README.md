@@ -8,10 +8,10 @@ Based on [completor.vim](https://github.com/maralla/completor.vim).
 Here, I am using [vim-plug](https://github.com/junegunn/vim-plug):
 ```
 Plug 'maralla/completor.vim'
-Plug 'damnever/completor-elixir'
+Plug 'damnever/completor-elixir', { 'do': 'make' }
 ```
 
-Resolve deps:
+In case of package manager has no post-update hooks, run the following commands to resolve deps:
 ```
 cd /path/to/plugin/completor-elixir
 make
