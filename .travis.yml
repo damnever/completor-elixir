@@ -1,0 +1,10 @@
+language: elixir
+
+elixir:
+    - '1.6'
+
+before_install:
+    - cd sense_wrapper
+
+script:
+    - mix test

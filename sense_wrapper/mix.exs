@@ -8,6 +8,7 @@ defmodule SenseWrapper.MixProject do
       elixir: "~> 1.6",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
+      aliases: [test: "test --no-start"],
       # escript: [main_module: SenseWrapper.CLI],
     ]
   end
@@ -24,7 +25,7 @@ defmodule SenseWrapper.MixProject do
   defp deps do
     [
       {:poison, "~> 3.1"},
-      {:elixir_sense , git: "git@github.com:msaraiva/elixir_sense.git", ref: "e8e524fc8220a67147881da84149f8560df9bb7f"},
+      {:elixir_sense , git: "https://github.com/msaraiva/elixir_sense.git", ref: "47352251a7747459a63d51e90c4a9b608feb725b"},
     ]
   end
 end
