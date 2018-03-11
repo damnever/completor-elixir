@@ -40,7 +40,7 @@ def _log(func):
 class Elixir(Completor):
     filetype = 'elixir'
     daemon = True
-    trigger = r'(\w{2,}\w*|\.\w*)$'
+    trigger = r'([0-9a-zA-Z?!_]{2,}[0-9a-zA-Z?!_]*|\.\w*)$'
 
     _ACTION_MAP = {
         b'doc': 'doc',
