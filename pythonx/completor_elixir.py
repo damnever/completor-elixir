@@ -4,6 +4,8 @@ import json
 import logging
 import os.path
 import functools
+import re
+import subprocess
 
 import vim
 from completor import Completor
@@ -132,8 +134,14 @@ class Elixir(Completor):
         return suggestions
 
     @_log
-    def on_doc(self, items):
-        return [self._load_data_from(items, '')]
+    def on_doc(self, items, _no_doc='No documentation available'):
+        doc = self._load_data_from(items, '')
+        # Check if doc available, if not and starts with ':', use erl -man.
+        lines = doc.split('\n')
+        if len(lines) > 2 and _no_doc == lines[2] and lines[0].startswith(':'):
+            erlmod = lines[0][1:].split('.')[0]
+            doc = _exec_cmd('erl -man ' + erlmod) or doc
+        return [doc]
 
     @_log
     def on_definition(self, items):
@@ -168,3 +176,15 @@ class Elixir(Completor):
 
         logger.warn('no response data found')
         return default
+
+
+def _exec_cmd(cmd):
+    try:
+        out = subprocess.check_output(cmd, shell=True)
+        return _rm0x08(out)
+    except subprocess.CalledProcessError:
+        return None
+
+
+def _rm0x08(content, _p=re.compile(b'.{1}\x08')):
+    return _p.sub(b'', content)
