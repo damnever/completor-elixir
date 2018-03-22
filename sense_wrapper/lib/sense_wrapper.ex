@@ -46,6 +46,7 @@ defmodule SenseWrapper do
     if ctx do
       %{"env" => env, "cwd" => cwd} = ctx
       # TODO(damnever): set context only if context changed
+      # credo:disable-for-previous-line
       ContextLoader.set_context(env, cwd)
     end
 
@@ -120,6 +121,7 @@ defmodule SenseWrapper do
         suggestions
     end
     |> parse_suggestions(mod, rest)
+    # credo:disable-for-previous-line
   end
 
   defp parse_suggestions(suggestions, _mod, []) do
@@ -133,6 +135,7 @@ defmodule SenseWrapper do
       else
         sugg.type
       end |> Atom.to_string
+    # credo:disable-for-previous-line
 
     %{
       "kind" => kind,
