@@ -17,9 +17,6 @@ pathlib = os.path
 logger = logging.getLogger('completor')
 cur_dir = pathlib.dirname(pathlib.abspath(__file__))
 sense_wrapper_dir = pathlib.join(cur_dir, '../sense_wrapper')
-# FIXME: ...
-sense_wrapper_cmd = 'sh -c "cd {} && MIX_ENV=prod mix run --no-compile"'
-sense_wrapper_cmd = sense_wrapper_cmd.format(sense_wrapper_dir)
 if not pathlib.isdir(pathlib.join(sense_wrapper_dir, 'deps')):
     raise RuntimeError('!!! No deps found, run `make` to resolve it!')
 
@@ -88,10 +85,15 @@ class Elixir(Completor):
 
     def get_cmd_info(self, _action):
         return vim.Dictionary(
-            cmd=sense_wrapper_cmd,
+            cmd='mix run --no-compile',
             ftype=self.filetype,
             is_daemon=self.daemon,
             is_sync=self.sync,
+            options={
+                'err_io': 'null',
+                'cwd': sense_wrapper_dir,
+                'env': {'MIX_ENV': 'prod'}
+            },
         )
 
     @_log

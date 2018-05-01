@@ -1,4 +1,6 @@
 defmodule SenseWrapper.App do
+  @moduledoc false
+
   use Application
   use Supervisor
   alias ElixirSense.Server.ContextLoader
@@ -15,9 +17,9 @@ defmodule SenseWrapper.App do
 
   defp run() do
     readline()
-    |> String.trim
-    |> SenseWrapper.process
-    |> IO.puts
+    |> String.trim()
+    |> SenseWrapper.process()
+    |> IO.puts()
 
     run()
   end
