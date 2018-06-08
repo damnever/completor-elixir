@@ -80,10 +80,11 @@ defmodule SenseWrapper do
   end
 
   defp handle_request("definition", code, line, column) do
-    case ElixirSense.definition(code, line, column) do
-      {reason, nil} -> {:error, reason}
-      {path, line} -> {:ok, %{"filename" => path, "line" => line}}
-      _ -> {:error, "not found"}
+    loc = ElixirSense.definition(code, line, column)
+    if loc.found do
+      {:ok, %{"filename" => loc.file, "line" => loc.line, "column" => loc.column}}
+    else
+      {:error, "definition not found"}
     end
   end
 

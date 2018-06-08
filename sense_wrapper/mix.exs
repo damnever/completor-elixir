@@ -25,7 +25,7 @@ defmodule SenseWrapper.MixProject do
   defp deps do
     [
       {:poison, "~> 3.1"},
-      {:elixir_sense , git: "https://github.com/msaraiva/elixir_sense.git", ref: "47352251a7747459a63d51e90c4a9b608feb725b"},
+      {:elixir_sense , git: "https://github.com/msaraiva/elixir_sense.git", ref: "4d63a5e347adab53a8f51680995d1e86391de536"},
     ]
   end
 end

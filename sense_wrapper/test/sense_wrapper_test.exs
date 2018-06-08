@@ -25,7 +25,7 @@ defmodule M do
 end
 """
     %{
-      "error" => "\"non_existing\""
+      "error" => "\"definition not found\""
     } = process(%{type: "definition", ctx: nil, code: code, line: 2, column: 8})
   end
 

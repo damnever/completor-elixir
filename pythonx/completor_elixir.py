@@ -152,10 +152,11 @@ class Elixir(Completor):
         if not loc:
             return []
         line = loc.pop('line')
+        column = loc.pop('column')
         loc.update({
             'name': 'elixir',
             'lnum': line,
-            'col': 3,  # FIXME(damnever)
+            'col': column,
         })
         return [loc]
 

@@ -1,4 +1,4 @@
 %{
-  "elixir_sense": {:git, "https://github.com/msaraiva/elixir_sense.git", "47352251a7747459a63d51e90c4a9b608feb725b", [ref: "47352251a7747459a63d51e90c4a9b608feb725b"]},
+  "elixir_sense": {:git, "https://github.com/msaraiva/elixir_sense.git", "4d63a5e347adab53a8f51680995d1e86391de536", [ref: "4d63a5e347adab53a8f51680995d1e86391de536"]},
   "poison": {:hex, :poison, "3.1.0", "d9eb636610e096f86f25d9a46f35a9facac35609a7591b3be3326e99a0484665", [:mix], [], "hexpm"},
 }
